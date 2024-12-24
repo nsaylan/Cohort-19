@@ -94,7 +94,7 @@ unzip sampledata.zip
   - Populate the `ProductCatalog` table with data using AWS CLI.
 
   ```bash
-  aws dynamodb batch-write-item --request-items file://ProductCatalog.json
+  aws dynamodb batch-write-item --request-items file://ProductCatalog.json  
   ```
 
   - Populate the `Forum` table with data using AWS CLI.
