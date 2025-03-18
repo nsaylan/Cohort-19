@@ -193,7 +193,7 @@ systemctl start docker
 systemctl enable docker
 usermod -a -G docker ec2-user
 # install docker-compose
-curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+curl -SL https://github.com/docker/compose/releases/download/v2.33.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ```
 
@@ -361,11 +361,24 @@ resource "aws_instance" "tfmyec2" {
 variable "myami" {
   type = map(string)
   default = {
-    default = "ami-01b799c439fd5516a"
-    dev     = "ami-0583d8c7a9c35822c"
-    prod    = "ami-04b70fa74e45c3917"
+    default = "ami-05b10e08d247fb927"
+    dev     = "ami-0c7af5fe939f2677f"
+    prod    = "ami-04b4f1a9cf54c11d0"
   }
-  description = "in order of an Amazon Linux 2023 ami, Red Hat Enterprise Linux 9 ami, and Ubuntu Server 22.04 LTS ami's"
+  description = "in order of an Amazon Linux 2023 ami, Red Hat Enterprise Linux 9 ami, and Ubuntu Server 24.04 LTS ami's"
+}
+
+
+output "ami" {
+  value = aws_instance.tfmyec2.*.ami
+}
+
+output "type" {
+  value = aws_instance.tfmyec2.*.instance_type
+}
+
+output "tags" {
+  value = aws_instance.tfmyec2.*.tags
 }
 ```
 

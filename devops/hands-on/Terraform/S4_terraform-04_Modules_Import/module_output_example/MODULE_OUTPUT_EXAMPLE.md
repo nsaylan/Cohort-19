@@ -10,7 +10,7 @@ output "public_subnet_id" {
 
 ```go
 resource "aws_instance" "tf-instances" {
-  ami = "ami-0c101f26f147fa7fd"
+  ami = "ami-05b10e08d247fb927"
   instance_type = "t2.micro"
   subnet_id = module.tf-vpc.public_subnet_id
 }

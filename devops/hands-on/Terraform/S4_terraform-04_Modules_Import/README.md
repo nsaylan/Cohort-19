@@ -219,7 +219,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "tf-instances" {
-  ami = "ami-04b70fa74e45c3917"
+  ami = "ami-04b4f1a9cf54c11d0"
   instance_type = "t2.micro"
   key_name = "clarusway"            // change here
   tags = {
@@ -283,7 +283,7 @@ import {
 }
 
 resource "aws_instance" "example" {
-  ami = "ami-0bb84b8ffd87024d8"
+  ami = "ami-05b10e08d247fb927"
   instance_type = "t2.micro"
   # (resource arguments...)
 }
