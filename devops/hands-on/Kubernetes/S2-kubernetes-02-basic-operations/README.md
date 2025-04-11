@@ -583,7 +583,7 @@ kubectl rollout history deploy mydeploy --revision=4
 kubectl rollout history deploy mydeploy --revision=1
 ```
 
-- List the `Deployment`, `ReplicaSet` and `Pods` of `mynginx` deployment using a label, and explain that the original ReplicaSet has been scaled up back to three and second ReplicaSet has been scaled down to zero.
+- List the `Deployment`, `ReplicaSet` and `Pods` of `mydeploy` deployment using a label, and explain that the original ReplicaSet has been scaled up back to three and second ReplicaSet has been scaled down to zero.
 
 ```bash
 kubectl get deploy,rs,po -l app=myapp

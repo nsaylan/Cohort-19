@@ -234,42 +234,26 @@ spec:
 ```bash
 cd ..
 kubectl apply -f to-do
-deployment.apps/db-deployment created
-persistentvolume/db-pv-vol created
-persistentvolumeclaim/database-persistent-volume-claim created
-service/db-service created
-deployment.apps/web-deployment created
-service/web-service created
 ```
+
 Note that we can use `directory` with `kubectl apply -f` command.
 
 Check the persistent-volume and persistent-volume-claim.
 
 ```bash
-$ kubectl get pv
-NAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                      STORAGECLASS   REASON   AGE
-db-pv-vol   5Gi        RWO            Retain           Bound    default/database-persistent-volume-claim   manual                  23s
-
-$ kubectl get pvc
-NAME                               STATUS   VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-database-persistent-volume-claim   Bound    db-pv-vol   5Gi        RWO            manual         56s
+kubectl get pv,pvc
 ```
 
 Check the pods.
+
 ```bash
-$ kubectl get pods
-NAME                              READY   STATUS    RESTARTS   AGE
-db-deployment-8597967796-q7x5s    1/1     Running   0          4m30s
-web-deployment-658cc55dc8-2h2zc   1/1     Running   2          4m30s
+kubectl get pods
 ```
 
 Check the services.
+
 ```bash
-$ kubectl get svc
-NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-db-service    ClusterIP   10.105.0.75     <none>        27017/TCP        4m39s
-kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP          2d8h
-web-service   NodePort    10.107.136.54   <none>        3000:30001/TCP   4m38s
+kubectl get svc
 ```
 
 - Note the `PORT(S)` difference between `db-service` and `web-service`. Why?
@@ -283,8 +267,8 @@ web-service   NodePort    10.107.136.54   <none>        3000:30001/TCP   4m38s
 - Create a `php-apache` directory and change directory.
 
 ```bash
-$ pwd
-/home/ubuntu/microservices
+pwd
+# /home/ubuntu/microservices
 ```
 
 ```bash
@@ -311,7 +295,7 @@ spec:
     spec:
       containers:
       - name: php-apache
-        image: registry.k8s.io/hpa-example
+        image: k8s.gcr.io/hpa-example
         ports:
         - containerPort: 80
         resources:
@@ -342,28 +326,19 @@ Note how the `Deployment` and `Service` `yaml` files are merged in one file.
 Deploy this `php-apache` file.
 
 ```bash
-$ kubectl apply -f . 
-deployment.apps/php-apache created
-service/php-apache-service created
+kubectl apply -f . 
 ```
 
 Get the pods.
+
 ```bash
-$ kubectl get po
-NAME                              READY   STATUS    RESTARTS   AGE
-db-deployment-8597967796-q7x5s    1/1     Running   0          17m
-php-apache-7869bd4fb-xsvnh        1/1     Running   0          24s
-web-deployment-658cc55dc8-2h2zc   1/1     Running   2          17m
+kubectl get po
 ```
 
 Get the services.
+
 ```bash
-$ kubectl get svc
-NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-db-service           ClusterIP   10.105.0.75     <none>        27017/TCP        17m
-kubernetes           ClusterIP   10.96.0.1       <none>        443/TCP          2d9h
-php-apache-service   NodePort    10.101.242.84   <none>        80:30002/TCP     35s
-web-service          NodePort    10.107.136.54   <none>        3000:30001/TCP   17m
+kubectl get svc
 ```
 
 - Let's check what web app presents us.
@@ -394,19 +369,9 @@ To understand better where autoscaling would provide the most value, let’s sta
 - Observe pods and services:
 
 ```bash
-$ kubectl get po
-NAME                              READY   STATUS    RESTARTS   AGE
-db-deployment-8597967796-q7x5s    1/1     Running   0          96m
-php-apache-7869bd4fb-xsvnh        1/1     Running   0          79m
-web-deployment-658cc55dc8-2h2zc   1/1     Running   2          96m
+kubectl get po
 
-
-$ kubectl get svc
-NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-db-service           ClusterIP   10.105.0.75     <none>        27017/TCP        96m
-kubernetes           ClusterIP   10.96.0.1       <none>        443/TCP          2d10h
-php-apache-service   NodePort    10.101.242.84   <none>        80:32748/TCP     79m
-web-service          NodePort    10.107.136.54   <none>        3000:30634/TCP   96m
+kubectl get svc
 ```
 
 - Add `watch` board to verify the latest status of Cluster by below Commands.(This is Optional as not impacting the Functionality of Cluster). Observe in a separate terminal.
@@ -430,10 +395,12 @@ kubectl autoscale deployment web-deployment --cpu-percent=50 --min=3 --max=5
 or we can use yaml files.
 
 ```bash
-$ pwd
-/home/ubuntu/microservices
-$ mkdir auto-scaling && cd auto-scaling
-$ cat << EOF > hpa-php-apache.yaml
+pwd
+# /home/ubuntu/microservices
+
+mkdir auto-scaling && cd auto-scaling
+
+cat << EOF > hpa-php-apache.yaml
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -458,7 +425,7 @@ EOF
 ```
 
 ```bash
-$ cat << EOF > hpa-web.yaml
+cat << EOF > hpa-web.yaml
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -490,27 +457,13 @@ kubectl apply -f hpa-web.yaml
 Let's look at the status:
 
 ```bash
-$ watch -n3 kubectl get service,hpa,pod -o wide 
+watch -n3 kubectl get service,hpa,pod -o wide 
 
-Every 3,0s: kubectl get service,hpa,pod -o wide                                                                       ubuntu: Sat Sep 12 17:48:18 2020
-
-NAME                         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE     SELECTOR
-service/db-service           ClusterIP   10.105.0.75     <none>        27017/TCP        105m    name=mongo
-service/kubernetes           ClusterIP   10.96.0.1       <none>        443/TCP          2d10h   <none>
-service/php-apache-service   NodePort    10.101.242.84   <none>        80:30002/TCP     88m     run=php-apache
-service/web-service          NodePort    10.107.136.54   <none>        3000:30001/TCP   105m    name=web
-
-NAME                                             REFERENCE                   TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/php-apache   Deployment/php-apache       <unknown>/50%   2         10        2          81s
-horizontalpodautoscaler.autoscaling/web          Deployment/web-deployment   <unknown>/50%   3         5         3          76s
-
-NAME                                  READY   STATUS    RESTARTS   AGE    IP           NODE       NOMINATED NODE   READINESS GATES
-pod/db-deployment-8597967796-q7x5s    1/1     Running   0          105m   172.18.0.5   minikube   <none>           <none>
-pod/php-apache-7869bd4fb-fgkpf        1/1     Running   0          66s    172.18.0.7   minikube   <none>           <none>
-pod/php-apache-7869bd4fb-xsvnh        1/1     Running   0          88m    172.18.0.6   minikube   <none>           <none>
-pod/web-deployment-658cc55dc8-2h2zc   1/1     Running   2          105m   172.18.0.4   minikube   <none>           <none>
-pod/web-deployment-658cc55dc8-88nxz   1/1     Running   0          61s    172.18.0.8   minikube   <none>           <none>
-pod/web-deployment-658cc55dc8-c7hdl   1/1     Running   0          61s    172.18.0.9   minikube   <none>           <none>
+#############
+# NAME                                             REFERENCE                   TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+# horizontalpodautoscaler.autoscaling/php-apache   Deployment/php-apache       <unknown>/50%   2         10        2          81s
+# horizontalpodautoscaler.autoscaling/web          Deployment/web-deployment   <unknown>/50%   3         5         3          76s
+#############
 ```
 - php-apache Pod number increased to 2, minimum number. 
 - web-deployment Pod number increased to 3, minimum number. 
@@ -518,38 +471,31 @@ pod/web-deployment-658cc55dc8-c7hdl   1/1     Running   0          61s    172.18
 
 
 We may check the current status of autoscaler by running:  
+
 ```bash
-$ kubectl get hpa
-NAME         REFERENCE                   TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-php-apache   Deployment/php-apache       <unknown>/50%   2         10        2          2m4s
-web          Deployment/web-deployment   <unknown>/50%   3         5         3          117s
+kubectl get hpa
+
+# NAME         REFERENCE                   TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+# php-apache   Deployment/php-apache       <unknown>/50%   2         10        2          2m4s
+# web          Deployment/web-deployment   <unknown>/50%   3         5         3          117s
 ```
 
 ```bash
-$ kubectl describe hpa
-....
-Reference:                                             Deployment/php-apache
-Metrics:                                               ( current / target )
-  resource cpu on pods  (as a percentage of request):  <unknown> / 50%
-....
-Conditions:
-  Type           Status  Reason                   Message
-  ----           ------  ------                   -------
-  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
-  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
+kubectl describe hpa
 
-.....
-Reference:                                             Deployment/web-deployment
-Metrics:                                               ( current / target )
-  resource cpu on pods  (as a percentage of request):  <unknown> / 50%
-....
-Conditions:
-  Type           Status  Reason                   Message
-  ----           ------  ------                   -------
-  AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
-  ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
-.....
+################
+# Reference:                                             Deployment/web-deployment
+# Metrics:                                               ( current / target )
+#   resource cpu on pods  (as a percentage of request):  <unknown> / 50%
+# ....
+# Conditions:
+#   Type           Status  Reason                   Message
+#   ----           ------  ------                   -------
+#   AbleToScale    True    SucceededGetScale        the HPA controller was able to get the target's current scale
+#   ScalingActive  False   FailedGetResourceMetric  the HPA was unable to compute the replica count: unable to get metrics for resource cpu: unable to fetch metrics from resource metrics API: the server could not find the requested resource (get pods.metrics.k8s.io)
+################
 ```
+
 - The `metrics` can't be calculated. So, the `metrics server` should be uploaded to the cluster.
 
 ### Install Metric Server 
@@ -560,7 +506,7 @@ Conditions:
 kubectl delete -n kube-system deployments.apps metrics-server
 ```
 
-- Get the Metric Server form [GitHub](https://github.com/kubernetes-sigs/metrics-server/releases/tag/v0.7.1).
+- Get the Metric Server form [GitHub](https://github.com/kubernetes-sigs/metrics-server/releases).
 
 ```bash
 wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -604,27 +550,16 @@ kubectl -n kube-system get pods
 - Verify `metrics-server` can access resources of the pods and nodes.
 
 ```bash
-$ kubectl top pods
-NAME                              CPU(cores)   MEMORY(bytes)   
-db-deployment-8597967796-8lwzr    6m           140Mi           
-php-apache-7869bd4fb-4q6mz        1m           11Mi            
-php-apache-7869bd4fb-wmhtl        1m           10Mi            
-web-deployment-6d8d8c777b-2fr9h   1m           22Mi            
-web-deployment-6d8d8c777b-z5xd2   1m           24Mi              
-```
+kubectl top pods
 
-```bash         
-$ kubectl top nodes
-NAME     CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-master   188m         9%     1245Mi          32%
-node1    108m         5%     1035Mi          27% 
-```
+kubectl top nodes
 
-```bash
-$ kubectl get hpa
-NAME         REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-php-apache   Deployment/php-apache       1%/50%    2         10        2          26m
-web          Deployment/web-deployment   2%/50%    3         5         3          15m
+kubectl get hpa
+
+
+# NAME         REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+# php-apache   Deployment/php-apache       1%/50%    2         10        2          26m
+# web          Deployment/web-deployment   2%/50%    3         5         3          15m
 ```
 - Look at the the values under TARGETS. The values are changed from `<unknown>/50%` to `1%/50%` & `2%/50%`, means the HPA can now idendify the current use of CPU.
 
@@ -641,20 +576,17 @@ web          Deployment/web-deployment   2%/50%    3         5         3        
 - First look at the services.
 
 ```bash
-$ kubectl get svc
-NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-db-service           ClusterIP      10.97.2.64      <none>        27017/TCP        23m
-kubernetes           ClusterIP      10.96.0.1       <none>        443/TCP          18d
-php-apache-service   LoadBalancer   10.102.71.34    <pending>     80:30002/TCP     18m
-web-service          NodePort       10.96.115.134   <none>        3000:30001/TCP   23m
+kubectl get svc
 ```
 
 ```bash
-$ kubectl run -it --rm load-generator --image=busybox /bin/sh  
+kubectl run -it --rm load-generator --image=busybox /bin/sh  
 
-Hit enter for command prompt
+#########
+# Hit enter for command prompt
 
 while true; do wget -q -O- http://<puplic ip>:<port number of php-apache-service>; done 
+#########
 ```
 
 Within a minute or so, we should see the higher CPU load by executing:
@@ -662,68 +594,30 @@ Within a minute or so, we should see the higher CPU load by executing:
 - Open new terminal and check the hpa.
 
 ```bash
-$ kubectl get hpa 
+kubectl get hpa 
 ```
 
 On the watch board:
+
 ```bash
-$ watch -n3 kubectl get service,hpa,pod -o wide
+watch -n3 kubectl get service,hpa,pod -o wide
 
-Every 3.0s: kubectl get service,hpa,pod -o wide                                                                     master: Thu Sep 17 11:27:18 2020
+# NAME                                             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+# horizontalpodautoscaler.autoscaling/php-apache   Deployment/php-apache       40%/50%   2         10        2          35m
+# horizontalpodautoscaler.autoscaling/web          Deployment/web-deployment   0%/50%    3         5         3          34m
 
-NAME                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
-service/db-service           ClusterIP      10.97.2.64      <none>        27017/TCP        46m   name=mongo
-service/kubernetes           ClusterIP      10.96.0.1       <none>        443/TCP          18d   <none>
-service/php-apache-service   LoadBalancer   10.102.71.34    <pending>     80:31138/TCP     41m   run=php-apache
-service/web-service          NodePort       10.96.115.134   <none>        3000:32040/TCP   46m   name=web
-
-NAME                                             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/php-apache   Deployment/php-apache       40%/50%   2         10        2          35m
-horizontalpodautoscaler.autoscaling/web          Deployment/web-deployment   0%/50%    3         5         3          34m
-
-NAME                                  READY   STATUS        RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES
-pod/db-deployment-8597967796-h952d    1/1     Running       0          46m     172.16.166.160   node1   <none>           <none>
-pod/load-generator                    1/1     Running       0          2m18s   172.16.166.129   node1   <none>           <none>
-pod/php-apache-7869bd4fb-bcxt4        1/1     Running       0          34m     172.16.166.163   node1   <none>           <none>
-pod/php-apache-7869bd4fb-xc5d6        1/1     Running       0          41m     172.16.166.164   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-hh2t4   1/1     Running       0          34m     172.16.166.157   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-q9c4t   1/1     Running       0          34m     172.16.166.172   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-tgkzc   1/1     Running       0          46m     172.16.166.159   node1   <none>           <none>
 ```
 
 - Now, let's introduce load for to-do web app with load-generator pod as follows (in a couple of terminals):
 
 ```bash
-$ kubectl exec -it load-generator -- /bin/sh
+kubectl exec -it load-generator -- /bin/sh
 / # while true; do wget -q -O- http://<puplic ip>:<port number of web-service> > /dev/null; done
 ```
 
 Watch table
 ```bash
-$ watch -n3 kubectl get service,hpa,pod -o wide
-
-Every 3.0s: kubectl get service,hpa,pod -o wide                                                                     master: Thu Sep 17 11:29:19 2020
-
-NAME                         TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
-service/db-service           ClusterIP      10.97.2.64      <none>        27017/TCP        48m   name=mongo
-service/kubernetes           ClusterIP      10.96.0.1       <none>        443/TCP          18d   <none>
-service/php-apache-service   LoadBalancer   10.102.71.34    <pending>     80:31138/TCP     43m   run=php-apache
-service/web-service          NodePort       10.96.115.134   <none>        3000:32040/TCP   48m   name=web
-
-NAME                                             REFERENCE                   TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-horizontalpodautoscaler.autoscaling/php-apache   Deployment/php-apache       42%/50%   2         10        3          37m
-horizontalpodautoscaler.autoscaling/web          Deployment/web-deployment   62%/50%   3         5         3          36m
-
-NAME                                  READY   STATUS    RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES
-pod/db-deployment-8597967796-h952d    1/1     Running   0          48m     172.16.166.160   node1   <none>           <none>
-pod/load-generator                    1/1     Running   0          4m19s   172.16.166.129   node1   <none>           <none>
-pod/php-apache-7869bd4fb-bcxt4        1/1     Running   0          36m     172.16.166.163   node1   <none>           <none>
-pod/php-apache-7869bd4fb-r22p4        1/1     Running   0          69s     172.16.166.176   node1   <none>           <none>
-pod/php-apache-7869bd4fb-xc5d6        1/1     Running   0          43m     172.16.166.164   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-2nf9x   1/1     Running   0          8s      172.16.166.188   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-hh2t4   1/1     Running   0          36m     172.16.166.157   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-q9c4t   1/1     Running   0          36m     172.16.166.172   node1   <none>           <none>
-pod/web-deployment-6d8d8c777b-tgkzc   1/1     Running   0          48m     172.16.166.159   node1   <none>           <none>
+watch -n3 kubectl get service,hpa,pod -o wide
 ```
 
 ### Stop load
@@ -735,11 +629,9 @@ pod/web-deployment-6d8d8c777b-tgkzc   1/1     Running   0          48m     172.1
 - Then we will verify the result state (after a minute or so):
   
 ```bash
-$ kubectl get hpa 
-```
-  
-```bash
-$ kubectl get deployment
+kubectl get hpa 
+
+kubectl get deployment
 ```
 
 # References: 

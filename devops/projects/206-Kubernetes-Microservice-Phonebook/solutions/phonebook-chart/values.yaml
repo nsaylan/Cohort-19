@@ -1,0 +1,2 @@
+webserver_image: olivercw/webserver
+resultserver_image: olivercw/resultserver

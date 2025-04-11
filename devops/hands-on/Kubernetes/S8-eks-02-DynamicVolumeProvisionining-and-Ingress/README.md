@@ -1,12 +1,12 @@
-# Hands-on EKS-02 : Ingress and Dynamic Volume Provisionining
+# Hands-on EKS-02: Ingress and Dynamic Volume Provisioning
 
-Purpose of the this hands-on training is to give students the knowledge of  Dynamic Volume Provisionining and Ingress.
+The purpose of this hands-on training is to give students the knowledge of  Dynamic Volume Provisioning and Ingress.
 
 ## Learning Outcomes
 
-At the end of the this hands-on training, students will be able to;
+At the end of this hands-on training, students will be able to;
 
-- Learn to Create and Manage EKS Cluster with eksctl.
+- Learn to Create and Manage an EKS Cluster with eksctl.
 
 - Explain the need for persistent data management
 
@@ -22,7 +22,7 @@ At the end of the this hands-on training, students will be able to;
 
 - Part 3 - Ingress
 
-- Part 4 - Dynamic Volume Provisionining
+- Part 4 - Dynamic Volume Provisioning
 
 
 ## Prerequisites
@@ -39,7 +39,7 @@ For information on installing or upgrading eksctl, see [Installing or upgrading 
 
 ### Install kubectl
 
-- Launch an AWS EC2 instance of Amazon Linux 2023 AMI with security group allowing SSH.
+- Launch an AWS EC2 instance of Amazon Linux 2023 AMI with a security group allowing SSH.
 
 - Connect to the instance with SSH.
 
@@ -49,10 +49,10 @@ For information on installing or upgrading eksctl, see [Installing or upgrading 
 sudo dnf update -y
 ```
 
-- Download the Amazon EKS vended kubectl binary.
+- Download the Amazon EKS vendor's kubectl binary.
 
 ```bash
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.29.0/2024-01-04/bin/linux/amd64/kubectl
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.31.0/2024-09-12/bin/linux/amd64/kubectl
 ```
 
 - Apply execute permissions to the binary.
@@ -73,7 +73,7 @@ mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$P
 echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
 ```
 
-- After you install kubectl , you can verify its version with the following command:
+- After you install kubectl, you can verify its version with the following command:
 
 ```bash
 kubectl version --client
@@ -119,15 +119,15 @@ aws configure
 eksctl create cluster --region us-east-1 --version 1.30 --zones us-east-1a,us-east-1b,us-east-1c --node-type t3a.medium --nodes 2 --nodes-min 2 --nodes-max 3 --name cw-cluster
 ```
 
-### Alternative way (Including ssh connect to worker node)
+### Alternative way (including SSH connection to the worker nodes)
 
-- If needed create ssh-key with command `ssh-keygen -f ~/.ssh/id_rsa`.
+- If needed, create ssh-key withthe  command `ssh-keygen -f ~/.ssh/id_rsa`.
 
 ```bash
 eksctl create cluster \
  --name cw-cluster \
  --region us-east-1 \
- --version 1.29 \
+ --version 1.30 \
  --zones us-east-1a,us-east-1b,us-east-1c \
  --nodegroup-name my-nodes \
  --node-type t3a.medium \
@@ -139,13 +139,13 @@ eksctl create cluster \
  --managed
 ```
 
-- Explain the deault values. 
+- Explain the default values. 
 
 ```bash
 eksctl create cluster --help
 ```
 
-- Show the aws `eks service` on aws management console and explain `eksctl-my-cluster-cluster` stack on `cloudformation service`.
+- Show the AWS `eks service` on aws management console and explain `eksctl-my-cluster-cluster` stack on `cloudformation service`.
 
 
 ## Part 3 - Ingress
@@ -157,7 +157,7 @@ mkdir ingress-lesson
 cd ingress-lesson
 ```
 
-- Create a file named `clarusshop.yaml` for clarusshop deployment object.
+- Create a file named `clarusshop.yaml` forthe  clarusshop deployment object.
 
 ```yaml
 apiVersion: apps/v1 
@@ -181,7 +181,7 @@ spec:
         - containerPort: 80
 ```
 
-- Create a file named `clarusshop-svc.yaml` for clarusshop service object.
+- Create a file named `clarusshop-svc.yaml` for the clarusshop service object.
 
 ```yaml
 apiVersion: v1
@@ -200,7 +200,7 @@ spec:
     app: clarusshop
 ```
 
-- Create a file named `account.yaml` for account deployment object.
+- Create a file named `account.yaml` for the account deployment object.
 
 ```yaml
 apiVersion: apps/v1 
@@ -224,7 +224,7 @@ spec:
         - containerPort: 80
 ```
 
-- Create a file named `account-svc.yaml` for account service object.
+- Create a file named `account-svc.yaml` for the account service object.
 
 ```yaml
 apiVersion: v1
@@ -251,17 +251,17 @@ kubectl apply -f .
 
 ### Ingress
 
-- Briefly explain ingress and ingress controller. For additional information a few portal can be visited like;
+- Briefly explain ingress and ingress controller. For additional information, a few portals can be visited, like;
 
 - https://kubernetes.io/docs/concepts/services-networking/ingress/
     
-- Open the offical [ingress-nginx]( https://kubernetes.github.io/ingress-nginx/deploy/ ) explain the `ingress-controller` installation steps for different architecture. We install ingress for bare metal.
+- Open the official [ingress-nginx]( https://kubernetes.github.io/ingress-nginx/deploy/ ), explain the `ingress-controller` installation steps for different architectures. We install an ingress for bare metal.
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.1/deploy/static/provider/aws/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.1/deploy/static/provider/cloud/deploy.yaml
 ```
 
-- Create a file named `ing.yaml` for ingress object.
+- Create a file named `ing.yaml` for the ingress object.
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -297,7 +297,7 @@ spec:
 kubectl apply -f ing.yaml
 ```
 
-> We can also create ingress with the following command.
+> We can also create an ingress with the following command.
 
 ```bash
 kubectl create ingress clarusshop-ingress --rule="/account*=account-svc:80" --rule="/*=clarusshop-svc:80" --class=nginx --annotation="nginx.ingress.kubernetes.io/rewrite-target=/"
@@ -309,7 +309,7 @@ kubectl create ingress clarusshop-ingress --rule="/account*=account-svc:80" --ru
 kubectl get ingress
 ```
 
-- You will get an output like below.
+- You will get an output like the one below.
 
 ```bash
 NAME                 CLASS   HOSTS   ADDRESS                                                                         PORTS   AGE
@@ -323,12 +323,6 @@ $ curl afdfe2adcb6934b4abb645258b8f73d2-501976fbe439549f.elb.us-east-1.amazonaws
 <h1>WELCOME TO THE CLARUSSHOP</h1><h2>For account service:<br>/account</h2>
 $ curl afdfe2adcb6934b4abb645258b8f73d2-501976fbe439549f.elb.us-east-1.amazonaws.com/account
 <h1>ACCOUNT SERVICE</h1>
-```
-
-- Delete everything.
-
-```bash
-kubectl delete -f .
 ```
 
 #### Host
@@ -370,7 +364,7 @@ spec:
 kubectl apply -f ing.yaml
 ```
 
-> We can also create ingress with the following command.
+> We can also create an ingress with the following command.
 
 ```bash
 kubectl create ingress clarusshop-ingress --rule="clarusshop.clarusway.us/*=clarusshop-svc:80" --rule="clarusshop.clarusway.us/account/*=account-svc:80" --class=nginx --annotation="nginx.ingress.kubernetes.io/rewrite-target=/"
@@ -382,7 +376,7 @@ kubectl create ingress clarusshop-ingress --rule="clarusshop.clarusway.us/*=clar
 kubectl get ingress
 ```
 
-- You will get an output like below.
+- You will get an output like the one below.
 
 ```bash
 kubectl get ingress
@@ -392,13 +386,7 @@ clarusshop-ingress   nginx   clarusshop.clarusway.us   afdfe2adcb6934b4abb645258
 
 - To reach the application with `host` name, create `clarusshop.clarusway.us` record for address (network load balancer) in `route53` service.
 
-- Apply all files.
-
-```bash
-kubectl apply -f .
-```
-
-- You can reach the application using curl command.
+- You can reach the application using the curl command.
 
 ```bash
 curl clarusshop.clarusway.us
@@ -688,19 +676,20 @@ kubectl apply -f pod-with-dynamic-storage.yaml
 kubectl exec -it test-aws -- bash
 ```
 - You will see an output like this
-
 ```bash
 root@test-aws:/# df -h
 Filesystem      Size  Used Avail Use% Mounted on
-overlay          80G  3.7G   77G   5% /
+overlay          80G  3.5G   77G   5% /
 tmpfs            64M     0   64M   0% /dev
-tmpfs           1.9G     0  1.9G   0% /sys/fs/cgroup
-/dev/nvme0n1p1   80G  3.7G   77G   5% /etc/hosts
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/xvda1       80G  3.5G   77G   5% /etc/hosts
 shm              64M     0   64M   0% /dev/shm
-/dev/nvme1n1    974M   24K  958M   1% /usr/share/nginx/html
-tmpfs           3.3G   12K  3.3G   1% /run/secrets/kubernetes.io/serviceaccount
-tmpfs           1.9G     0  1.9G   0% /proc/acpi
-tmpfs           1.9G     0  1.9G   0% /sys/firmware
+/dev/xvdcj      2.9G  9.1M  2.9G   1% /usr/share/nginx/html
+tmpfs           2.0G   12K  2.0G   1% /run/secrets/kubernetes.io/serviceaccount
+tmpfs           2.0G     0  2.0G   0% /proc/acpi
+tmpfs           2.0G     0  2.0G   0% /proc/scsi
+tmpfs           2.0G     0  2.0G   0% /sys/firmware
+root@test-aws:/#
 ```
 
 - Delete the storageclass that we create.

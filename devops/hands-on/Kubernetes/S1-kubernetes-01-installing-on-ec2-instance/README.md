@@ -31,7 +31,7 @@ At the end of the this hands-on training, students will be able to;
 
 ## Part 1 - Setting Up Kubernetes Environment on All Nodes
 
-- In this hands-on, we will prepare two nodes for Kubernetes on `Ubuntu 24.04`. One of the node will be configured as the Master node, the other will be the worker node. Following steps should be executed on all nodes. *Note: It is recommended to install Kubernetes on machines with `2 CPU Core` and `2GB RAM` at minimum to get it working efficiently. For this reason, we will select `t3a.medium` as EC2 instance type, which has `2 CPU Core` and `4 GB RAM`.*
+- In this hands-on, we will prepare two nodes for Kubernetes on `Ubuntu 22.04`. One of the node will be configured as the Master node, the other will be the worker node. Following steps should be executed on all nodes. *Note: It is recommended to install Kubernetes on machines with `2 CPU Core` and `2GB RAM` at minimum to get it working efficiently. For this reason, we will select `t2.medium` as EC2 instance type, which has `2 CPU Core` and `4 GB RAM`.*
 
 - Explain briefly [required ports](https://kubernetes.io/docs/reference/networking/ports-and-protocols/)  for Kubernetes. 
 
@@ -63,7 +63,7 @@ At the end of the this hands-on training, students will be able to;
 
 > **Ignore this section for AWS instances. But, it must be applied for real servers/workstations.**
 >
-> - Find the line in `/etc/fstab` referring to swap, and comment out it as follows.
+> - Find the line in `/etc/fstab` referring to swap, and comment out it as following.
 >
 > ```bash
 > # Swap a usb extern (3.7 GB):
@@ -72,7 +72,7 @@ At the end of the this hands-on training, students will be able to;
 >
 > or,
 >
-> - Disable swap from the command line
+> - Disable swap from command line
 >
 > ```bash
 > free -m
@@ -80,7 +80,7 @@ At the end of the this hands-on training, students will be able to;
 > ```
 >
 
-- Hostname change of the nodes, so we can discern the roles of each node. For example, you can name the nodes (instances) like `kube-master, kube-worker-1`
+- Hostname change of the nodes, so we can discern the roles of each nodes. For example, you can name the nodes (instances) like `kube-master, kube-worker-1`
 
 ```bash
 sudo hostnamectl set-hostname <node-name-master-or-worker>
@@ -135,14 +135,14 @@ sysctl net.bridge.bridge-nf-call-iptables net.bridge.bridge-nf-call-ip6tables ne
 ```bash
 # Add Docker's official GPG key:
 sudo apt-get update
-sudo apt-get install ca-certificates curl gnupg
+sudo apt-get install ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 # Add the repository to Apt sources:
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
@@ -170,9 +170,9 @@ sudo ctr container ls
 
 #### Install nerdctl (Optional)
 
-- While the ctr tool is bundled together with containerd, it should be noted the ctr tool is solely made for debugging containerd. The nerdctl tool provides a stable and human-friendly user experience.
+- While the ctr tool is bundled together with containerd, it should be noted the ctr tool is solely made for debugging containerd. The nerdctl tool provides stable and human-friendly user experience.
 
-- Download the nerdctl binary from nerdctl GitHub page. (https://github.com/containerd/nerdctl/releases)
+- Download the nerdctl binary from nerdctl github page. (https://github.com/containerd/nerdctl/releases)
 
 - Download `nerdctl-full-*-linux-amd64.tar.gz` release.
 
@@ -239,7 +239,7 @@ curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
-- Update apt package index, install kubelet, kubeadm, and kubectl, and pin their version:
+- Update apt package index, install kubelet, kubeadm and kubectl, and pin their version:
 
 ```bash
 sudo apt-get update
@@ -271,9 +271,9 @@ sudo kubeadm init --apiserver-advertise-address=<ec2-private-ip> --pod-network-c
 >sudo kubeadm init --apiserver-advertise-address=<ec2 private ip> --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=NumCPU
 >```
 
-> **Note**: There are a bunch of pod network providers and some of them use pre-defined `--pod-network-cidr` block. Check the documentation in the References part. We will use Flannel for the pod network and Flannel uses 10.244.0.0/16 CIDR block. 
+> **Note**: There are a bunch of pod network providers and some of them use pre-defined `--pod-network-cidr` block. Check the documentation at the References part. We will use Flannel for pod network and Flannel uses 10.244.0.0/16 CIDR block. 
 
->- In case of problems, use the following command to reset the initialization and restart from Part 2 (Setting Up Master Node for Kubernetes).
+>- In case of problems, use following command to reset the initialization and restart from Part 2 (Setting Up Master Node for Kubernetes).
 
 >```bash
 >sudo kubeadm reset
@@ -305,9 +305,9 @@ kubeadm join 172.31.32.92:6443 --token 6grb8s.6jjyof8xi8vtxztb \
         --discovery-token-ca-cert-hash sha256:32d1c906fddc50a865b533f909377b2219ef650373ca1b7d4310de025817a00b
 ```
 
-> Note down the `kubeadm join ...` part to connect your worker nodes to the master node. Remember to run this command with `sudo`.
+> Note down the `kubeadm join ...` part in order to connect your worker nodes to the master node. Remember to run this command with `sudo`.
 
-- Run following commands to set up local `kubeconfig` on the master node.
+- Run following commands to set up local `kubeconfig` on master node.
 
 ```bash
 mkdir -p $HOME/.kube
@@ -321,13 +321,13 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 ```
 
-- Master node (also named as Control Plane) should be ready, and show existing pods created by the user. Since we haven't created any pods, the list should be empty.
+- Master node (also named as Control Plane) should be ready, show existing pods created by user. Since we haven't created any pods, list should be empty.
 
 ```bash
 kubectl get nodes
 ```
 
-- Show the list of the pods created for the Kubernetes service itself. Note that pods of Kubernetes service are running on the master node.
+- Show the list of the pods created for Kubernetes service itself. Note that pods of Kubernetes service are running on the master node.
 
 ```bash
 kubectl get pods -n kube-system
@@ -345,14 +345,14 @@ kubectl get pods -n kube-system -o wide
 sudo nerdctl --namespace k8s.io ps -a
 ```
 
-- Get the services available. Since we haven't created any services yet, we should see only the Kubernetes service.
+- Get the services available. Since we haven't created any services yet, we should see only Kubernetes service.
 
 ```bash
 kubectl get services
 ```
 ## Part 3 - Adding the Worker Nodes to the Cluster
 
-- Show the list of nodes. Since we haven't added worker nodes to the cluster, we should see only the master node itself on the list.
+- Show the list of nodes. Since we haven't added worker nodes to the cluster, we should see only master node itself on the list.
 
 ```bash
 kubectl get nodes
@@ -385,13 +385,13 @@ kubectl get nodes -o wide
 
 ## Part 4 - Deploying a Simple Nginx Server on Kubernetes
 
-- Check the readiness of nodes at the cluster on the master node.
+- Check the readiness of nodes at the cluster on master node.
 
 ```bash
 kubectl get nodes
 ```
 
-- Show the list of existing pods in the default namespace on master. Since we haven't created any pods, the list should be empty.
+- Show the list of existing pods in default namespace on master. Since we haven't created any pods, list should be empty.
 
 ```bash
 kubectl get pods
@@ -409,7 +409,7 @@ kubectl get pods -o wide --all-namespaces
 kubectl run nginx-server --image=nginx  --port=80
 ```
 
-- Get the list of pods in the default namespace on master and check the status and readiness of `nginx-server`
+- Get the list of pods in default namespace on master and check the status and readyness of `nginx-server`
 
 ```bash
 kubectl get pods -o wide
@@ -434,7 +434,7 @@ kubernetes     ClusterIP   10.96.0.1       <none>        443/TCP        13m    <
 nginx-server   NodePort    10.110.144.60   <none>        80:32276/TCP   113s   run=nginx-server
 ```
 
-- Open a browser and check the `public ip:<NodePort>` of the worker node to see Nginx Server is running. In this example, NodePort is 32276.
+- Open a browser and check the `public ip:<NodePort>` of worker node to see Nginx Server is running. In this example, NodePort is 32276.
 
 - Clean the service and pod from the cluster.
 
@@ -443,7 +443,7 @@ kubectl delete service nginx-server
 kubectl delete pods nginx-server
 ```
 
-- Check there is no pod left in the default namespace.
+- Check there is no pod left in default namespace.
 
 ```bash
 kubectl get pods
@@ -453,7 +453,7 @@ kubectl get pods
 
 - To delete a worker node from the cluster, follow the below steps.
 
-  - Drain and delete the worker node on the master.
+  - Drain and delete worker node on the master.
 
   ```bash
   kubectl get nodes
@@ -469,7 +469,7 @@ kubectl get pods
   sudo kubeadm reset
   ```
   
-> Note: If you try to have the worker rejoin the cluster, it might be necessary to clean `kubelet.conf` and `ca.crt` files and free port `10250`, before rejoining.
+> Note: If you try to have worker rejoin cluster, it might be necessary to clean `kubelet.conf` and `ca.crt` files and free the port `10250`, before rejoining.
 >
 > ```bash
 >  sudo rm /etc/kubernetes/kubelet.conf

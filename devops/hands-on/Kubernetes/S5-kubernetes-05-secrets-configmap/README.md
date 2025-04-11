@@ -385,8 +385,8 @@ Let's see the message.
 
 ```bash
 kubectl get svc demo-service -o wide
-NAME           TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE   SELECTOR
-demo-service   NodePort   10.109.195.236   <none>        80:30001/TCP   17s   app=demo
+NAME           TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE     SELECTOR
+demo-service   LoadBalancer   10.97.39.39   <pending>     80:30001/TCP   2m20s   app=demo
 
 curl < worker-ip >:30001
 Hello, Clarusway!
@@ -631,7 +631,7 @@ kubectl apply -f k8s
 ```bash
 kubectl get svc
 NAME           TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-demo-service   LoadBalancer   10.110.195.109   <pending>     80:32711/TCP   17s
+demo-service   NodePort       10.102.145.186   <none>        80:30001/TCP   5s
 kubernetes     ClusterIP      10.96.0.1        <none>        443/TCP        46d
 
 curl < worker-ip >:32711
@@ -658,7 +658,7 @@ kubectl delete -f k8s
 
 ### From a file
 
-- Create a file named `content` .
+- Create a file named `content` under k8s folder.
 
 ```bash
 Welcome to the kubertes Lessons.

@@ -1,0 +1,10 @@
+//aws_access_key = ""
+//aws_secret_key = ""
+myami = ["ami-0453ec754f44f9a4a", "ami-0583d8c7a9c35822c", "ami-0866a3c8686eaeeba"]
+mykey = "mykey"
+tags = ["control_node", "web_server_1", "web_server_2"]
+worker-node-type = "t2.micro"
+control-node-type = "t2.micro"
+num = 3
+region = "us-east-1"
+mysecgr = "ansible-session5-sec-gr"
