@@ -1,16 +1,16 @@
-# Hands-on Ansible-02 : Using Playbook with Tasks
+# Hands-on Ansible-02: Using Playbook with Tasks
 
-Purpose of the this hands-on training is to give students the knowledge of basic Ansible skills.
+The purpose of this hands-on training is to give students the knowledge of basic Ansible skills.
 
 ## Learning Outcomes
 
-At the end of the this hands-on training, students will be able to;
+At the end of this hands-on training, students will be able to;
 
-- Learn ansible playbooks.
+- Learn Ansible playbooks.
 
 ## Outline
 
-- Part 1 - Install ansible
+- Part 1 - Install Ansible
 
 - Part 2 - Ansible Playbooks
 
@@ -20,7 +20,7 @@ At the end of the this hands-on training, students will be able to;
 1-control-node
 2-node1
 3-node2
-4-node3 (ubuntu)
+4-node3 (Ubuntu)
 
 - Connect to the control node with SSH and run the following commands.
 
@@ -65,13 +65,13 @@ deprecation_warnings=False
 interpreter_python=auto_silent
 ```
 
-- Copy your pem file to the `/home/ec2-user` directory. First go to your pem file directory on your local computer and run the following command.
+- Copy your pem file to the `/home/ec2-user` directory. First, go to your pem file directory on your local computer and run the following command.
 
 ```bash
 scp -i <pem file> <pem file> ec2-user@<public DNS name of the control node>:/home/ec2-user
 ```
 
-- or you can create a file name <pem file> into the directory `/home/ec2-user` on the control node and copy your pem file into it.
+- or you can create a file named <pem file> in the directory `/home/ec2-user` on the control node and copy your pem file into it.
 
 ## Part 2 - Ansible Playbooks
 
@@ -104,7 +104,7 @@ ansible all -m ping -o
 ansible-playbook playbook1.yml
 ```
 
-- Create a text file named ``testfile1`` and write "Hello Clarusway" with using vim. Then create a yaml file name ``playbook2.yml`` and send the "testfile1" to the hosts. 
+- Create a text file named ``testfile1`` and write "Hello Clarusway" with using vim. Then create a yaml file named ``playbook2.yml`` and send the "testfile1" to the hosts. 
 
 ```yml
 ---
@@ -217,7 +217,7 @@ vim playbook4.yml
 ansible-playbook -b playbook4.yml
 ```
 
-- This time, install Apache and wget together with ``playbook5.yml``. After the installation, enter the IP-address of node2 to the browser and show the Apache server. Then, connect node1 with SSH and check if "wget and apache server" are running. 
+- This time, install Apache and wget together with ``playbook5.yml``. After the installation, enter the IP address of node2 in the browser and see the Apache server. Then, connect node1 with SSH and check if "wget and apache server" are running. 
 
 ```bash
 vim playbook5.yml

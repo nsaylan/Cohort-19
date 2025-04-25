@@ -1,14 +1,14 @@
-# Hands-on Ansible-04: Creating directory layout, error handling and controlling execution with strategies in ansible
+# Hands-on Ansible-04: Creating directory layout, error handling, and controlling execution with strategies in Ansible
 
-The purpose of this hands-on training is to give students the knowledge of best parctices in ansible playbooks.
+The purpose of this hands-on training is to give students the knowledge of best practices in Ansible playbooks.
 
 ## Learning Outcomes
 
 At the end of this hands-on training, students will be able to;
 
-- Explain how to create directory layout using Ansible
+- Explain how to create a directory layout using Ansible
 
-- Explain how to make error handling in Ansible
+- Explain how to handle errors in Ansible
 
 - Explain how to control playbook execution in Ansible
 
@@ -20,11 +20,11 @@ At the end of this hands-on training, students will be able to;
 
 - Part 3 - Pinging the Target Nodes
 
-- Part 4 - Install, Start, Enable Mysql and Run The Phonebook App
+- Part 4 - Install, Start, Enable MySQL, and Run The Phonebook App
 
 - Part 5 - File separation
 
-- Part-6 - Error Handling and Controlling playbook execution: strategies
+- Part 6 - Error Handling and Controlling playbook execution: strategies
 
 ## Part 1 - Build the Infrastructure
 
@@ -40,19 +40,19 @@ At the end of this hands-on training, students will be able to;
 
 ## Part 2 - Install Ansible on the Controller Node
 
-- Run the terraform files in github repo.
+- Run the Terraform files in the github repo.
 
 - Connect to your ```Controller Node```.
 
-- Optionally you can connect to your instances using VS Code.
+- Optionally, you can connect to your instances using VS Code.
 
-- Check Ansible's installation with the command below.
+- Check Ansible's installation using the command below.
 
 ```bash
 $ ansible --version
 ```
 
-- Show and exlain the files (`ansible.cfg`, `inventory.ini`) that created by terraform.
+- Show and explain the files (`ansible.cfg`, `inventory.ini`) that were created by Terraform.
 
 ## Part 3 - Pinging the Target Nodes
 
@@ -63,9 +63,9 @@ mkdir ansible-lesson
 cd ansible-lesson
 ```
 
-- Copy the phonebook app files (`phonebook-app.py`, `requirements.txt`, `init.sql`, `templates`) to the control node from your github repository.
+- Copy the phonebook app files (`phonebook-app.py`, `requirements.txt`, `init.sql`, `templates`) to the control node from your GitHub repository.
 
-- Do not forget to change db server private ip in phonebook-app.py. (`app.config['MYSQL_DATABASE_HOST'] = "<db_server private ip>"`)
+- Do not forget to change db server private IP in phonebook-app.py. (`app.config['MYSQL_DATABASE_HOST'] = "<db_server private ip>"`)
 
 - Create a file named ```ping-playbook.yml``` and paste the content below.
 
@@ -81,7 +81,7 @@ touch ping-playbook.yml
       ansible.builtin.ping:
 ```
 
-- Run the command below for pinging the servers.
+- Run the command below to ping the servers.
 
 ```bash
 ansible-playbook ping-playbook.yml
@@ -89,9 +89,9 @@ ansible-playbook ping-playbook.yml
 
 - Explain the output of the above command.
 
-## Part4 - Install, Start, Enable Mysql and Run The Phonebook App.
+## Part 4 - Install, Start, Enable MySQL, and Run The Phonebook App.
 
-- Create a playbook name `db_config.yml` and configure db_server.
+- Create a playbook named `db_config.yml` and configure db_server.
 
 ```yml
 - name: db configuration
@@ -189,13 +189,13 @@ ansible-playbook db_config.yml
 mysql --version
 ```
 
-- Or, you can do it with ad-hoc command.
+- Or, you can do it with an ad-hoc command.
 
 ```bash
 ansible db_server -m shell -a "mysql --version"
 ```
 
-- Create another playbook name `web_config.yml` and configure web_server.
+- Create another playbook named `web_config.yml` and configure web_server.
 
 ```yml
 - name: web server configuration
@@ -258,7 +258,7 @@ ansible-playbook web_config.yml
 
 - ``host_vars`` is a folder that you create and within the folder are YAML files which reference each specific target node.
 
-- ``group_vars`` is also a folder you create and within the folder are YAML files which reference groups of target nodes or all nodes.
+- ``group_vars`` is also a folder you create, and within the folder are YAML files which reference groups of target nodes or all nodes.
 
 - Both the Ansible ``host_vars`` directory and the ``group_vars`` directory have to be created manually and are not created by default.
 
@@ -272,7 +272,7 @@ cd group_vars && touch servers.yml
 cd ../host_vars && touch db_server.yml web_server.yml
 ```
 
-- Next, create variables for playbook under `servers.yml`
+- Next, create variables for the playbook under `servers.yml`
 
 ```yml
 db_name: phonebook_db
@@ -281,19 +281,19 @@ db_user: remoteUser
 db_password: clarus1234
 ```
 
-- Next, create variables for playbook under `db_server.yml`
+- Next, create variables for the playbook under `db_server.yml`
 
 ```yml
 hostname: cw_db_server
 ```
 
-- Next, create variables for playbook under `web_server.yml`
+- Next, create variables for the playbook under `web_server.yml`
 
 ```yml
 hostname: cw_web_server
 ```
 
-- We can run our tasks with using ``ìnclude_tasks`` module in ansible. `Ìnclude_tasks` includes a file with a list of tasks to be executed in the current playbook. So, now we will use two yml files to list our tasks.
+- We can run our tasks using ``ìnclude_tasks`` module in Ansible. `Ìnclude_tasks` includes a file with a list of tasks to be executed in the current playbook. So, now we will use two yml files to list our tasks.
 
 - Create a directory `tasks` under the ```ansible-lesson``` directory.
 
@@ -411,7 +411,7 @@ mkdir tasks && cd tasks && touch db_tasks.yml web_tasks.yml
 
 - Explain what these tasks and modules.
 
-- Create a playbook name `playbook.yml` to run application.
+- Create a playbook named `playbook.yml` to run the application.
 
 ```yml
 ---
@@ -444,9 +444,9 @@ ansible-playbook playbook.yml
 
 ## Part-6 Error Handling and Controlling playbook execution: strategies
 
-- Now, we create one more ec2 instance and add it to our inventory. (``amazon linux 2023, t2.micro``)
+- Now, we create one more EC2 instance and add it to our inventory. (``amazon linux 2023, t2.micro``)
 
-- Create a playbook (``playbook2.yml``) to learn ansible playbook strategies and error handling.. 
+- Create a playbook (``playbook2.yml``) to learn Ansible playbook strategies and error handling.. 
 
 ```yml
 ---
@@ -482,7 +482,7 @@ ansible-playbook playbook.yml
 ansible-playbook playbook2.yml
 ```
 
-- In the playbook we will take an ``error``, becouse we can not use `apt` module in node3 (amazon linux 2). So, the playbook can not complete for node3. If you want to stop whole playbook when take an error in a target node, you can use `any_errors_fatal` parameter. Now, add the parameter `any_errors_fatal: true` after the `hosts` parameter and run the playbook again. 
+- In the playbook, we will get an ``error``, because we can not use `apt` module in node3 (amazon linux 2). So, the playbook can not complete for node3. If you want to stop the whole playbook when an error occurs in a target node, you can use `any_errors_fatal` parameter. Now, add the parameter `any_errors_fatal: true` after the `hosts` parameter and run the playbook again. 
 
 ```bash
 ansible-playbook playbook2.yml
@@ -490,17 +490,17 @@ ansible-playbook playbook2.yml
 
 - We will see that the ``playbook stops when any task fail``.
 
-- Then, add `ignore_errors: true` parameter inside the failed task and run playbook agin.
+- Then, add `ignore_errors: true` parameter inside the failed task and run the playbook again.
 
 ```bash
 ansible-playbook playbook2.yml
 ```
 
-- This time, we will see that the ``playbook ignores to fail third task and continue to playbook``.
+- This time, we will see that the ``playbook ignores the third task and continues to playbook``.
 
-- ``Strategy`` defines how a playbook is executed in Ansible. When Ansible runs, it runs each task across all servers in parallel at the same time. It waits for the task to finish on all servers before proceeding to the next task. This is the default behavior and called ``linear strategy``.
+- ``Strategy`` defines how a playbook is executed in Ansible. When Ansible runs, it runs each task across all servers in parallel at the same time. It waits for the task to finish on all servers before proceeding to the next task. This is the default behavior and is called ``linear strategy``.
 
-- ``Free startegy``: With the free strategy, unlike the default linear strategy, a host that is slow or stuck on a specific task won’t hold up the rest of the hosts and tasks.
+- ``Free strategy ``: With the free strategy, unlike the default linear strategy, a host that is slow or stuck on a specific task won’t hold up the rest of the hosts and tasks.
 
 - Now, first comment `any_errors_fatal: true` (Using any_errors_fatal with the free strategy is not supported, as tasks are executed independently on each host), next add the parameter ``strategy: free`` and run the playbook.
 
@@ -508,10 +508,10 @@ ansible-playbook playbook2.yml
 ansible-playbook playbook2.yml
 ```
 
-- We will see that the tasks run non-paralell with `strategy: free` parameter.
+- We will see that the tasks run non-parallel with `strategy: free` parameter.
 
 
-- By default, Ansible runs each task on all hosts affected by a play before starting the next task on any host, using 5 forks. (By default, Ansible can create five forks at a time, and this is defined in the Ansible configuration file, ansible.cfg.) If you want to change this default behavior, you can use a different strategy plugin, change the number of forks, or apply one of several play-level keywords like ``serial``. This is not a separate strategy. This is based on the linear strategy, but you can control the number of servers executed at once or in a batch. In the playbook, we do not have a strategy option, so it uses linear strategy by default. But there is a new option called serial where you can specify how many servers you would like to process together.
+- By default, Ansible runs each task on all hosts affected by a play before starting the next task on any host, using 5 forks. (By default, Ansible can create five forks at a time, and this is defined in the Ansible configuration file, ansible.cfg.) If you want to change this default behavior, you can use a different strategy plugin, change the number of forks, or apply one of several play-level keywords like ``serial``. This is not a separate strategy. This is based on the linear strategy, but you can control the number of servers executed at once or in a batch. In the playbook, we do not have a strategy option, so it uses a linear strategy by default. But there is a new option called serial, where you can specify how many servers you would like to process together.
 
 - First, comment `strategy: free` and run the playbook without ``serial`` parameter, next run with this parameter (`serial: 2`) and see the differences between two execution.
 

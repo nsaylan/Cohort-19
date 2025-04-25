@@ -336,10 +336,10 @@ sudo dnf install git
 ```yml
 - src: git+https://github.com/geerlingguy/ansible-role-docker
   name: docker
-  version: 7.4.3
+  version: 7.4.7
 
 - src: git+https://github.com/geerlingguy/ansible-role-ntp
-  version: 2.5.0
+  version: 2.7.0
   name: ansible-role-ntp
 
 - src: git+https://github.com/UnderGreen/ansible-prometheus-node-exporter
@@ -426,7 +426,6 @@ ansible-galaxy init /home/ec2-user/ansible/roles/common
   community.general.slack:
     token: "{{slack_token}}"
     msg: ' {{ inventory_hostname }} Deployed with Ansible'
-    # msg: '[{{project_code}}] [{{env_name}}] {{app_name}} {{ inventory_hostname }} {{aws_tags.Name}} '
     channel: "{{slack_channel}}"
     username: "{{slack_username}}"
   delegate_to: localhost
