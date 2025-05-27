@@ -80,7 +80,7 @@ whereis mvn
 
 ```bash
 cd /opt
-sudo wget -O nexus.tar.gz https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+sudo wget -O nexus.tar.gz https://download.sonatype.com/nexus/3/nexus-3.79.1-04-linux-x86_64.tar.gz
 ls
 ```
 
@@ -560,11 +560,6 @@ docker info
 - Name it as `docker-hub`.
 - Click `Save`.
 
-### For the Security Realm
-
-Click Security > Realms
-Add the `Docker Bearer Token Realm`
-Click `Save`
 
 ### For the repo
 
@@ -572,7 +567,6 @@ Click `Save`
 - Click `Create Repository` and select `docker (proxy)`
 - Give it some name (docker-hub)
 - Check `HTTP` and give it a valid port (8082)
-- Check `Allow anonymous docker pull`
 - Under Proxy > Remote Storage, enter this url: https://registry-1.docker.io
 - Under Docker Index, select `Use Docker Hub`
 - Under Storage > Blob Store, select the blob store you created earlier (docker-hub)

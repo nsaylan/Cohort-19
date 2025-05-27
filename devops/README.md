@@ -1,10 +1,10 @@
-# clarusway-devops-13-23:
+# clarusway-devops:
 
-This private workshop repository contains projects, hands-on training, coding challenges, and class-notes for the Clarusway Students of AWS & DevOps-13.
+This private workshop repository contains projects, hands-on training, coding challenges, and class notes for the Clarusway Students of AWS & DevOps.
 
 ## Description
 
-The clarusway-workshop repository contains materials related to the IT trainings like projects, hands-on trainings, coding challenges, class-notes etc. in the following main areas.
+The Clarusway-Workshop repository contains materials related to the IT trainings, like projects, hands-on trainings, coding challenges, class notes, etc., in the following main areas.
 
 - [Class Notes](./class-notes/README.md)
 
@@ -20,13 +20,13 @@ The clarusway-workshop repository contains materials related to the IT trainings
 
 ## Rules & Policy
 
-- This repo is read only for Students of Clarusway.
+- This repo is read-only for Clarusway students.
 
-- Every material within this repo is meant for building portfolios of students.
+- Every material within this repo is meant to build students' portfolios.
 
-- Solution of the projects, hands-on trainings or coding challenges will not be shared within this repo.
+- Solution of the projects, hands-on training, or coding challenges will not be shared within this repo.
 
-- Students of Clarusway can clone/download this repo to get the latest materials related to their trainings.
+- Students of Clarusway can clone/download this repo to get the latest materials related to their training.
 
 - After cloning or downloading this repo, students are recommended to create their own local relevant repos and work on them.
 
@@ -34,9 +34,9 @@ The clarusway-workshop repository contains materials related to the IT trainings
 
 ## Naming Convention for Folders 
 
-- Use lower case letters to name the folders.
+- Use lowercase letters to name the folders.
 
-- The name of the folder should give detailed info about it's contents such as date/session, instructor and title:
+- The name of the folder should give detailed info about its contents, such as date/session, instructor, and title:
 
     - 2020-06-30-victor-using-package-manager
     

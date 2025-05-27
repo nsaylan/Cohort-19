@@ -44,10 +44,10 @@ mvn --version
 - Install git.
 
 ```bash
-sudo dnf install git
+sudo dnf install git -y
 ```
 
-- Fork the `https://github.com/spring-projects/spring-petclinic` repo to your repo and then clone to your instance.
+- Fork the `https://github.com/spring-projects/spring-petclinic` repo to your repo and then clone it to your instance.
 
 ```bash
 git clone https://github.com/<user-name>/spring-petclinic.git
@@ -76,7 +76,7 @@ java -jar target/*.jar
 - Run a MySQL container for this app.
 
 ```bash
-docker run -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic -p 3306:3306 mysql:8.2
+docker run --rm -d -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic -p 3306:3306 mysql:9.1
 ```
 
 > Note that whenever the database type changes, the app needs to run with a different profile: `spring.profiles.active=mysql` for MySQL.
@@ -150,7 +150,7 @@ docker network ls
 - Create the MySQL container in the `petnet` network.
 
 ```bash
-docker run --name mysql-server --net petnet -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic mysql:8.2
+docker run -d --rm --name mysql-server --net petnet -e MYSQL_USER=petclinic -e MYSQL_PASSWORD=petclinic -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=petclinic mysql:9.1
 ```
 
 - Create a Dockerfile in the `/home/ec2-user` folder.
@@ -158,13 +158,13 @@ docker run --name mysql-server --net petnet -e MYSQL_USER=petclinic -e MYSQL_PAS
 ```Dockerfile
 FROM maven:3.9.6-amazoncorretto-17 AS builder 
 COPY .m2 /root/.m2
-COPY spring-petclinic /app
 WORKDIR /app
+COPY spring-petclinic .
 RUN mvn clean package
 
 FROM amazoncorretto:17-alpine3.18
 WORKDIR /app
-COPY --from=builder /app/target/spring-petclinic-3.3.0-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/spring-petclinic-3.4.0-SNAPSHOT.jar app.jar
 ENV SPRING_PROFILES_ACTIVE mysql
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]
@@ -179,7 +179,7 @@ docker build -t <docker-user-name>/petclinic .
 - Run the app
 
 ```bash
-docker run --name petclinic --net petnet -p 8080:8080 clarusway/petclinic
+docker run --rm --name petclinic --net petnet -p 8080:8080 clarusway/petclinic
 ```
 
 - Check the application at `<instance-ip>:8080` port.
@@ -190,17 +190,23 @@ docker run --name petclinic --net petnet -p 8080:8080 clarusway/petclinic
 docker rm -f petclinic mysql-server
 ```
 
-- Create a `docker-compose.yaml` file for the project in the `/home/ec2-user` folder.
+- Create a `compose.yaml` file for the project in the `/home/ec2-user` folder.
 
 ```yaml
 services:
   mysql-server:
-    image: mysql:8.2
+    image: mysql:9.1
     environment:
       - MYSQL_ROOT_PASSWORD=Jj123456
       - MYSQL_USER=petclinic
       - MYSQL_PASSWORD=petclinic
       - MYSQL_DATABASE=petclinic
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3306"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
     networks:
       - petnet
 
@@ -208,7 +214,8 @@ services:
     image: clarusway/petclinic
     restart: always
     depends_on:
-      - mysql-server
+      mysql-server:
+        condition: service_healthy
     ports:
       - "8080:8080"
     networks:
