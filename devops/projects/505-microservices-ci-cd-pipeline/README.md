@@ -2473,10 +2473,10 @@ eksctl version
 
 ### Install kubectl
 
-- Download the Amazon EKS vended kubectl binary.
+- Download the Amazon EKS vendor's kubectl binary.
 
 ```bash
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.0/2024-05-12/bin/linux/amd64/kubectl
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.3/2025-04-17/bin/linux/amd64/kubectl
 ```
 
 - Apply execute permissions to the binary.
@@ -2491,13 +2491,13 @@ chmod +x ./kubectl
 sudo mv kubectl /usr/local/bin
 ```
 
-- After you install kubectl , you can verify its version with the following command:
+- After you install kubectl, you can verify its version with the following command:
 
 ```bash
 kubectl version --client
 ```
 
-- Switch user to jenkins for creating eks cluster. Execute following commands as `jenkins` user.
+- Switch user to Jenkins for creating eks cluster. Execute fthe ollowing commands as `jenkins` user.
 
 ```bash
 sudo su - jenkins -s /bin/bash
@@ -2534,7 +2534,8 @@ eksctl create cluster -f cluster.yaml
 
 ```bash
 export PATH=$PATH:$HOME/bin
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0/deploy/static/provider/aws/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.2/deploy/static/provider/cloud/deploy.yaml
+
 ```
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -2745,10 +2746,9 @@ git checkout feature/msp-22
 pipeline {
     agent any
     environment {
-        PATH=sh(script:"echo $PATH:/usr/local/bin:$HOME/bin", returnStdout:true).trim()
         APP_NAME="petclinic"
         APP_REPO_NAME="clarusway-repo/petclinic-app-qa"
-        AWS_ACCOUNT_ID=sh(script:'export PATH="$PATH:/usr/local/bin" && aws sts get-caller-identity --query Account --output text', returnStdout:true).trim()
+        AWS_ACCOUNT_ID=sh(script:'aws sts get-caller-identity --query Account --output text', returnStdout:true).trim()
         AWS_REGION="us-east-1"
         ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
     }
@@ -2850,12 +2850,12 @@ git push origin release
 - Delete  EKS cluster via `eksctl`. It will take a while.
 
 ```bash
-sudo su - jenkins
+sudo su - jenkins -s /bin/bash
 eksctl delete cluster -f cluster.yaml
 ```
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-## MSP 23 - Prepare High-availability RKE Kubernetes Cluster on AWS EC2
+## MSP 23 - Prepare High-Availability RKE Kubernetes Cluster on AWS EC2
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 * Create `feature/msp-23` branch from `release`.
