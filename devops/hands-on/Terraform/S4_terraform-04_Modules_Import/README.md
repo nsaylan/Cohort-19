@@ -1,10 +1,10 @@
-# Hands-on Terraform-04 : Terraform Modules and import.
+# Hands-on Terraform-04: Terraform Modules and import.
 
-Purpose of the this hands-on training is to give students the knowledge of terraform modules and import in Terraform.
+The purpose of this hands-on training is to give students the knowledge of terraform modules and import in Terraform.
 
 ## Learning Outcomes
 
-At the end of the this hands-on training, students will be able to;
+At the end of this hands-on training, students will be able to;
 
 - Use Terraform modules.
 
@@ -22,7 +22,7 @@ At the end of the this hands-on training, students will be able to;
 
 - The ``.tf`` files in your working directory when you run terraform plan or terraform apply together form the root module. That module may call other modules and connect them together by passing output values from one to input values of another.
 
--Create folders name `terraform-modules`, `modules`, `dev`, `prod` directories in the home directory and files as below.
+-Create folders named `terraform-modules`, `modules`, `dev`, `prod` directories in the home directory and files as below.
 
 ```bash
 mkdir terraform-modules && cd terraform-modules && mkdir dev modules prod && cd dev && touch dev-vpc.tf && cd ../modules && touch main.tf outputs.tf variables.tf && cd ../prod && touch prod-vpc.tf && cd ../modules
@@ -42,7 +42,7 @@ mkdir terraform-modules && cd terraform-modules && mkdir dev modules prod && cd 
 
 ![terraform modules](terraform-modules.png)
 
-- Go to the `modules/main.tf` file, add the followings.
+- Go to the `modules/main.tf` file, add the following.
 
 ```go
 provider "aws" {
@@ -73,9 +73,9 @@ resource "aws_subnet" "private_subnet" {
 }
 ```
 
-# This is not a real public subnet. Because we didn't attach it to a internet gateway. It is the route table entries that make the subnets private or public.
+> This is not a real public subnet. Because we didn't attach it to an internet gateway, it is the route table entries that make the subnets private or public.
 
-- Go to the `modules/variables.tf` file, add the followings.
+- Go to the `modules/variables.tf` file, add the following.
 
 ```go
 variable "environment" {
@@ -98,7 +98,7 @@ variable "private_subnet_cidr" {
 }
 ```
 
-- Go to the `modules/outputs.tf` file, add the followings.
+- Go to the `modules/outputs.tf` file, add the following.
 
 ```go
 output "vpc_id" {
@@ -118,7 +118,7 @@ output "private_subnet_cidr" {
 }
 ```
 
-- Go to the `dev/dev-vpc.tf` file, add the followings.
+- Go to the `dev/dev-vpc.tf` file, add the following.
 
 ```go
 module "tf-vpc" {
@@ -131,7 +131,7 @@ output "vpc-cidr-block" {
 }
 ```
 
-- Go to the `prod/prod-vpc.tf` file, add the followings.
+- Go to the `prod/prod-vpc.tf` file, add the following.
 
 ```go
 module "tf-vpc" {
@@ -176,27 +176,27 @@ terraform destroy -auto-approve
 
 ## Part 2 - Terraform Import
 
-- Terraform is able to import existing infrastructure. 
+- Terraform can import existing infrastructure. 
 
-- In this example, we have 1 ubuntu EC2 instance in our AWS account and we want to import this resource to our infrastructure.
+- In this example, we have 1 Ubuntu EC2 instance in our AWS account, and we want to import this resource to our infrastructure.
 
 - Bringing existing infrastructure under Terraform's control involves five main steps:
 
   1. Identify the existing infrastructure to be imported.
-  2. Write Terraform configuration that matches that infrastructure.
+  2. Write a Terraform configuration that matches that infrastructure.
   3. Import infrastructure into your Terraform state.
   4. Review the Terraform plan to ensure the configuration matches the expected state and infrastructure.
   5. Apply the configuration to update your Terraform state.
 
-- First, go to the AWS console and create an EC2 instance ami is `Ubuntu 24.04` and tag is `Name=ubuntu-24.04`.
+- First, go to the AWS console and create an EC2 instance ami is `Ubuntu 24.04` and tag it as `Name=ubuntu-24.04`.
 
-- Create a folder name `terraform-import` and enter the directory.
+- Create a folder named `terraform-import` and enter the directory.
 
 ```bash
 cd && mkdir terraform-import && cd terraform-import
 ```
 
-- Create a file name `main.tf`. Add the followings according to the existing resource.
+- Create a file named `main.tf`. Add the following according to the existing resource.
 
 ```
 vim main.tf
@@ -228,13 +228,13 @@ resource "aws_instance" "tf-instances" {
 }
 ```
 
-- Open the terminal within this directory and initialize the Terraform.
+- Open the terminal within this directory and initialize Terraform.
 
 ```bash
 terraform init
 ```
 
-- Import the ubuntu instance. (Take the ubuntu 24.04 instance-id from the console)
+- Import the Ubuntu instance. (Get the Ubuntu 24.04 instance ID from the AWS console)
 
 ```bash
 $ terraform import "aws_instance.tf-instances" i-092fe70d1cef163c1
@@ -257,7 +257,7 @@ your Terraform state and will henceforth be managed by Terraform.
 terraform state list
 ```
 
-- Go to the terminal and run the command `terraform plan` and `terraform apply`.
+- Go to the terminal and run the commands `terraform plan` and `terraform apply`.
 
 ```bash
 terraform plan
